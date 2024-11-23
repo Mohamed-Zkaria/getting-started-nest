@@ -2,10 +2,14 @@ import { Controller, Get, Post, Req, HttpCode, Header, Param, Body, Res, HttpSta
 import { Request } from 'express';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { Response } from 'express';
+import { CatService } from './cats.service';
+import { Cat } from './interfaces/cats.interface';
 
 
 @Controller('cats')
 export class CatsController {
+
+    constructor(private catService: CatService){}
 
     // @Post()
     // create(): string {
@@ -32,15 +36,9 @@ export class CatsController {
     }
 
     // @Post()
-    // async create(@Body() createCatDto: CreateCatDto){
-    //     console.log({createCatDto})
-    //     return "this action adds new cat.";
+    // create(@Res() res: Response){
+    //     res.status(HttpStatus.CREATED).send();
     // }
-
-    @Post()
-    create(@Res() res: Response){
-        res.status(HttpStatus.CREATED).send();
-    }
 
 
     // @Get()
@@ -50,13 +48,24 @@ export class CatsController {
     // }
 
 
+    // @Get()
+    // findAll(@Res({ passthrough: true }) res: Response) {
+    //     console.log("Use pass through to let nest handle the response and send it itself.")
+    //     console.log("Now you can interact with the native response object.")
+    //     console.log("(for example, set cookies or headers depending on certain conditions), but leave the rest to the framework.")
+    //     res.status(HttpStatus.OK);
+    //     return [];
+    // }
+
+    @Post()
+    async create(@Body() createCatDto: CreateCatDto){
+        console.log({createCatDto})
+        this.catService.create(createCatDto);
+    }
+
     @Get()
-    findAll(@Res({ passthrough: true }) res: Response) {
-        console.log("Use pass through to let nest handle the response and send it itself.")
-        console.log("Now you can interact with the native response object.")
-        console.log("(for example, set cookies or headers depending on certain conditions), but leave the rest to the framework.")
-        res.status(HttpStatus.OK);
-        return [];
+    async findAll(): Promise<Cat[]>{
+        return this.catService.findAll();
     }
 
 
